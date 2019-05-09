@@ -7,6 +7,13 @@ package intervaltimer;
 
 import accesoBD.AccesoBD;
 import java.net.URL;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -17,14 +24,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import modelo.Grupo;
 import modelo.Gym;
+import modelo.Sesion;
 import modelo.SesionTipo;
 
 /**
@@ -33,6 +44,7 @@ import modelo.SesionTipo;
  */
 public class FXMLIntervalControllerController implements Initializable {
 
+    
     private ObservableList<Grupo> listGroups;
     private ObservableList<SesionTipo> listSessionTypes;
     @FXML
@@ -47,9 +59,33 @@ public class FXMLIntervalControllerController implements Initializable {
     private Button btnWorkout;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+            
+
         Gym gym = AccesoBD.getInstance().getGym();
+
+        
         listGroups = FXCollections.observableList(gym.getGrupos());
         listSessionTypes = FXCollections.observableList(gym.getTiposSesion());
+    // --------------------------- //
+    // TEST //
+        try {
+            ArrayList<Sesion> aux = new ArrayList<>();
+            Grupo hola = listGroups.get(0);
+            for (int i = 0; i < 10; i++) {
+            Instant first = Instant.MIN;
+            Sesion s1 = new Sesion();
+            s1.setTipo(listSessionTypes.get(0));
+            Instant second = Instant.now();
+            s1.setDuracion(Duration.between(first, second));
+            s1.setFecha(LocalDateTime.of(i, i, i, i, i));
+            
+            aux.add(s1);
+            }
+            hola.setSesiones(aux);
+        } catch (Exception err )  {
+            System.out.println("jeje");
+        }
+        
         ListViewGroups.setCellFactory(param -> new ListCell<Grupo>() {
             @Override
             protected void updateItem(Grupo item, boolean empty) {
@@ -104,6 +140,34 @@ public class FXMLIntervalControllerController implements Initializable {
 
     @FXML
     private void seeGraphics(ActionEvent event) {
+        Dialog<ButtonType> dlg = new Dialog<>();
+        dlg.getDialogPane().getButtonTypes().addAll(ButtonType.CLOSE);
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Sesiones");
+       
+        LineChart<String,Number> lineChart = new LineChart<>(xAxis,yAxis);
+        XYChart.Series series1 = new XYChart.Series();
+        series1.setName("test");
+        XYChart.Series series2 = new XYChart.Series();
+        series2.setName("otrotest");
+        Grupo grupo = listGroups.get(0);
+        for(Sesion sesion : grupo.getSesiones()) {
+             Number aux = (Number) sesion.getDuracion().toMinutes();
+             Integer hola = sesion.getFecha().getMinute();
+             Number teoric_duration = (Number) sesion.getTipo().getT_ejercicio();
+             series1.getData().add(new XYChart.Data(hola.toString(), aux));
+             series2.getData().add(new XYChart.Data(hola.toString(),teoric_duration));
+             System.out.println(sesion.toString()); // Funciona!!!!
+        }
+        lineChart.getData().add(series1);
+        lineChart.getData().add(series2);
+        dlg.getDialogPane().setContent(lineChart);
+        Optional<ButtonType> res = dlg.showAndWait();
+        if(res.get() == ButtonType.CLOSE) {
+            System.out.println("Hola lo conseguĺi");
+        }
+        
     }
 
     @FXML
@@ -227,7 +291,7 @@ public class FXMLIntervalControllerController implements Initializable {
             alert.setHeaderText("Saving data in DB");
             alert.setContentText("The application is saving the changes in the data into the database. This action can expend some minutes.");
             AccesoBD.getInstance().salvar();
-            alert.showAndWait();
+            alert.show();
             Platform.exit();
         } catch (Exception e) {
         }
