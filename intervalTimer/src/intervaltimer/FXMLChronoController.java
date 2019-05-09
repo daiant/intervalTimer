@@ -78,9 +78,9 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
                 }
 
                 if (milesimas < 10) {
-                    mil = "00" + milesimas;
+                    mil += milesimas.toString();
                 } else if (milesimas < 100) {
-                    mil = "0" + milesimas;
+                    mil =  milesimas.toString();
                 } else {
                     mil = milesimas.toString();
                 }
@@ -91,7 +91,7 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
         } catch (Exception e) {
         }
         //Cuando se reincie se coloca nuevamente en 00:00:000
-        tiempo.setText("00:00:000");
+        tiempo.setText("00:00:0");
     }
    
     public void iniciarCronometro() {

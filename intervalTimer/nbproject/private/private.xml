@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/daiant/Documentos/intervalTimer/intervalTimer/src/intervaltimer/FXMLIntervalController.fxml</file>
-            <file>file:/home/daiant/Documentos/intervalTimer/intervalTimer/src/intervaltimer/FXMLIntervalControllerController.java</file>
+            <file>file:/home/pff/Documents/IPCEntrega2/intervalTimer/src/intervaltimer/FXMLChronoController.java</file>
+            <file>file:/home/pff/Documents/IPCEntrega2/intervalTimer/src/intervaltimer/FXMLIntervalControllerController.java</file>
+            <file>file:/home/pff/Documents/IPCEntrega2/intervalTimer/src/intervaltimer/FXMLChrono.fxml</file>
+            <file>file:/home/pff/Documents/IPCEntrega2/intervalTimer/src/intervaltimer/IntervalTimer.java</file>
         </group>
     </open-files>
 </project-private>
