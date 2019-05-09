@@ -19,10 +19,11 @@ public class IntervalTimer extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLIntervalController.fxml"));
-        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLIntervalController.fxml"));
+        Parent root = (Parent) loader.load();
         Scene scene = new Scene(root);
-        
+        FXMLIntervalControllerController controller = loader.getController();
+        stage.setOnHidden(event -> controller.exitApplication());
         stage.setScene(scene);
         stage.show();
     }

@@ -9,8 +9,8 @@ import accesoBD.AccesoBD;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 
-import com.sun.xml.internal.ws.developer.UsesJAXBContextFeature;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,7 +45,6 @@ public class FXMLIntervalControllerController implements Initializable {
     private Button btnDelete;
     @FXML
     private Button btnWorkout;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Gym gym = AccesoBD.getInstance().getGym();
@@ -192,12 +191,20 @@ public class FXMLIntervalControllerController implements Initializable {
         dialog.setY(300);
         dialog.setTitle("Novo gropo");
         addSession.setOnAction(e -> {
-            SesionTipo typeSessionAux = new SesionTipo();
-            typeSessionAux.setCodigo(new_name.getText());
-            typeSessionAux.setNum_circuitos(Integer.parseInt(num_series.getText()));
-            listSessionTypes.add(typeSessionAux);
-            typeSession.setItems(listSessionTypes);
-            System.out.println(typeSessionAux.getNum_circuitos());
+            try {
+                SesionTipo sesion = new SesionTipo();
+                sesion.setCodigo(new_name.getText());
+                sesion.setT_calentamiento(Integer.parseInt(tiempo_calentamiento.getText()));
+                sesion.setNum_ejercicios(Integer.parseInt(num_ejer.getText()));
+                sesion.setT_ejercicio(Integer.parseInt(tiempo_ejer.getText()));
+                sesion.setD_ejercicio(Integer.parseInt(desc_ejer.getText()));
+                sesion.setNum_circuitos(Integer.parseInt(num_series.getText()));
+                sesion.setD_circuito(Integer.parseInt(desc_serie.getText()));
+                listSessionTypes.add(sesion);
+            }
+            catch(Exception err) {
+                System.out.println("Pollito la liaste");
+            }
            });
         ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.YES);
         ButtonType cancelButtonType = ButtonType.CANCEL;
@@ -213,6 +220,17 @@ public class FXMLIntervalControllerController implements Initializable {
         dialog.showAndWait();
 
 
+    }
+
+    void exitApplication() {  try {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setHeaderText("Saving data in DB");
+            alert.setContentText("The application is saving the changes in the data into the database. This action can expend some minutes.");
+            AccesoBD.getInstance().salvar();
+            alert.showAndWait();
+            Platform.exit();
+        } catch (Exception e) {
+        }
     }
 
 }
