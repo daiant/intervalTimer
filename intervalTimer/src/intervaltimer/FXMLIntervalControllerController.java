@@ -9,35 +9,32 @@ import accesoBD.AccesoBD;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import com.sun.xml.internal.ws.developer.UsesJAXBContextFeature;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import modelo.Grupo;
 import modelo.Gym;
+import modelo.SesionTipo;
 
 /**
  *
  * @author daiant
  */
 public class FXMLIntervalControllerController implements Initializable {
-    
+
     private ObservableList<Grupo> listGroups;
+    private ObservableList<SesionTipo> listSessionTypes;
     @FXML
     private ListView<Grupo> ListViewGroups;
     @FXML
@@ -53,6 +50,7 @@ public class FXMLIntervalControllerController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Gym gym = AccesoBD.getInstance().getGym();
         listGroups = FXCollections.observableList(gym.getGrupos());
+        listSessionTypes = FXCollections.observableList(gym.getTiposSesion());
         ListViewGroups.setCellFactory(param -> new ListCell<Grupo>() {
             @Override
             protected void updateItem(Grupo item, boolean empty) {
@@ -70,14 +68,14 @@ public class FXMLIntervalControllerController implements Initializable {
         } catch(NullPointerException e )  {
             System.out.println("No pasa nada.");
         }
-     
-        
+
+
     btnGraphics.disableProperty().bind(Bindings.isEmpty(ListViewGroups.getSelectionModel().getSelectedItems()));
     btnEdit.disableProperty().bind(Bindings.isEmpty(ListViewGroups.getSelectionModel().getSelectedItems()));
     btnDelete.disableProperty().bind(Bindings.isEmpty(ListViewGroups.getSelectionModel().getSelectedItems()));
     btnWorkout.disableProperty().bind(Bindings.isEmpty(ListViewGroups.getSelectionModel().getSelectedItems()));
-    
-    }    
+
+    }
 
     @FXML
     private void newGroup(ActionEvent event) {
@@ -129,7 +127,7 @@ public class FXMLIntervalControllerController implements Initializable {
         dialog.setTitle("Novo gropo");
         Optional<ButtonType> result = dialog.showAndWait();
         if(result.get() == ButtonType.OK) {
-            
+
             Grupo queMalEstáProgramadoEstoJsoler = new Grupo();
             queMalEstáProgramadoEstoJsoler.setCodigo(name_text.getText());
             queMalEstáProgramadoEstoJsoler.setDescripcion(desc_text.getText());
@@ -145,13 +143,76 @@ public class FXMLIntervalControllerController implements Initializable {
         alert.setTitle("QUE HACES LOCO");
         alert.setHeaderText("¿Eliminar " + aux.getCodigo()+"?");
         Optional<ButtonType> result = alert.showAndWait();
-        if(result.get() == ButtonType.OK) {    
+        if(result.get() == ButtonType.OK) {
            listGroups.remove(aux);
         }
     }
 
     @FXML
     private void beginWorkout(ActionEvent event) {
+        Grupo aux = ListViewGroups.getSelectionModel().getSelectedItem();
+        TextField name_text = new TextField(aux.getCodigo());
+        TableView typeSession = new TableView();
+        typeSession.setItems(listSessionTypes);
+        TableColumn nombre = new TableColumn("Nombre");
+        TableColumn series = new TableColumn("Series");
+        nombre.setCellValueFactory(
+                new PropertyValueFactory<SesionTipo,String>("codigo")
+        );
+        series.setCellValueFactory(new PropertyValueFactory<SesionTipo,String>("num_circuitos"));
+        typeSession.getColumns().addAll(nombre, series);
+        //-------//
+        TextField new_name = new TextField();
+        TextField tiempo_calentamiento = new TextField();
+        TextField num_ejer = new TextField();
+        TextField tiempo_ejer = new TextField();
+        TextField desc_ejer = new TextField();
+        TextField num_series = new TextField();
+        TextField desc_serie = new TextField();
+        Dialog<ButtonType> dialog = new Dialog<>();
+        Button addSession = new Button("añadir");
+        dialog.getDialogPane().setContent(
+                new HBox(10,
+                    new VBox(8,
+                        new HBox(new Label("Grupo: "), name_text),
+                        new HBox(new Label("Sesión: "), typeSession)
+                ),
+                    new VBox(8,
+                        new Label("Añadir sesión"),
+                        new HBox(new Label("Nombre: "), new_name),
+                        new HBox(new Label("Duración calentamiento: "), tiempo_calentamiento),
+                        new HBox(new Label("Número ejercicios: "), num_ejer),
+                        new HBox(new Label("Duración ejercicios: "), tiempo_ejer),
+                        new HBox(new Label("Descanso entre ejercicios: "), desc_ejer),
+                        new HBox(new Label("Número de series: "), num_series),
+                        new HBox(new Label("Descanso entre series: "), desc_serie),
+                        addSession
+                    )));
+        dialog.getDialogPane().setHeaderText("Nueva Sesión");
+        dialog.setY(300);
+        dialog.setTitle("Novo gropo");
+        addSession.setOnAction(e -> {
+            SesionTipo typeSessionAux = new SesionTipo();
+            typeSessionAux.setCodigo(new_name.getText());
+            typeSessionAux.setNum_circuitos(Integer.parseInt(num_series.getText()));
+            listSessionTypes.add(typeSessionAux);
+            typeSession.setItems(listSessionTypes);
+            System.out.println(typeSessionAux.getNum_circuitos());
+           });
+        ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.YES);
+        ButtonType cancelButtonType = ButtonType.CANCEL;
+
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, cancelButtonType);
+        Button btOk = (Button) dialog.getDialogPane().lookupButton(loginButtonType);
+        btOk.addEventFilter(ActionEvent.ACTION, e -> {
+            dialog.getDialogPane().setContent(
+                    new Label("Hola!!!")
+            );
+            e.consume();
+        });
+        dialog.showAndWait();
+
+
     }
-    
+
 }
