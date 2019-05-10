@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="intervalTimer.jar" size="12039" download="eager" />
+    <jar href="intervalTimer.jar" size="14377" download="eager" />
     <jar href="lib/AccesoBD.jar" size="12323" download="eager" />
   </resources>
   <jfx:javafx-desc  width="800" height="600" main-class="intervaltimer.IntervalTimer"  name="intervalTimer" />

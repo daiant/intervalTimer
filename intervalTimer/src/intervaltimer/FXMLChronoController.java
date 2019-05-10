@@ -8,13 +8,18 @@ package intervaltimer;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import modelo.SesionTipo;
 
 /**
  * FXML Controller class
@@ -30,20 +35,65 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
     boolean pausar;
     Thread hilo;
     boolean cronometroActivo;
-    @FXML
-    private Accordion asd;
     Integer minutos;
     Integer segundos;
     Integer milesimas;
+    @FXML
+    private TextField t_calentamiento;
+    @FXML
+    private TextField n_ejercicio;
+    @FXML
+    private TextField t_ejercicio;
+    @FXML
+    private TextField d_ejercicio;
+    @FXML
+    private TextField n_series;
+    @FXML
+    private TextField d_series;
+    @FXML
+    private Button btnStart;
+    @FXML
+    private Button btnCancelTabla;
+    @FXML
+    private Button addSesion;
+    @FXML
+    private TextField textId;
+    @FXML
+    private VBox vBoxSesiones;
+    @FXML
+    private VBox vBoxChrono;
+    
+    private ObservableList<SesionTipo> listSessionTypes;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        minutos = 1;
-        segundos = 0;
-        milesimas = 0;
+        
+        addSesion.setOnAction(e -> {
+            try {
+                SesionTipo sesion = new SesionTipo();
+                sesion.setCodigo(textId.getText());
+                sesion.setT_calentamiento(Integer.parseInt(t_calentamiento.getText()));
+                sesion.setNum_ejercicios(Integer.parseInt(n_ejercicio.getText()));
+                sesion.setT_ejercicio(Integer.parseInt(t_ejercicio.getText()));
+                sesion.setD_ejercicio(Integer.parseInt(d_ejercicio.getText()));
+                sesion.setNum_circuitos(Integer.parseInt(n_series.getText()));
+                sesion.setD_circuito(Integer.parseInt(d_series.getText()));
+                listSessionTypes.add(sesion);
+            }
+            catch(Exception err) {
+                System.out.println(e);
+            }
+           });
+        btnStart.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                vBoxSesiones.setVisible(false);
+                vBoxChrono.setVisible(true);
+            }
+});
     }    
 
     public void run() {
