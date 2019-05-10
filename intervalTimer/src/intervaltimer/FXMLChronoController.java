@@ -32,7 +32,7 @@ import modelo.SesionTipo;
  *
  * @author pff
  */
-public class FXMLChronoController implements Initializable,Runnable,ActionListener {
+public class FXMLChronoController implements Initializable, Runnable, ActionListener {
 
     @FXML
     private Text tiempo;
@@ -68,7 +68,7 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
     private VBox vBoxSesiones;
     @FXML
     private VBox vBoxChrono;
-    
+
     private ObservableList<SesionTipo> listSessionTypes;
     @FXML
     private TableView<SesionTipo> tableSessionTypes;
@@ -76,6 +76,13 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
     private TableColumn<SesionTipo, String> nameColumn;
     @FXML
     private TableColumn<SesionTipo, String> seriesColumn;
+    @FXML
+    private TableColumn<SesionTipo, String> ejerciciosColumn;
+    @FXML
+    private TableColumn<SesionTipo, String> tiemposColumn;
+    @FXML
+    private TableColumn<SesionTipo, String> descansoColumn;
+
     /**
      * Initializes the controller class.
      */
@@ -87,9 +94,12 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
         System.out.println(listSessionTypes.isEmpty());
         tableSessionTypes.setItems(listSessionTypes);
         nameColumn.setCellValueFactory(
-              new PropertyValueFactory<>("codigo")
+                new PropertyValueFactory<>("codigo")
         );
         seriesColumn.setCellValueFactory(new PropertyValueFactory<>("num_circuitos"));
+        ejerciciosColumn.setCellValueFactory(new PropertyValueFactory<>("num_ejercicios"));
+        tiemposColumn.setCellValueFactory(new PropertyValueFactory<>("t_ejercicio"));
+        descansoColumn.setCellValueFactory(new PropertyValueFactory<>("d_ejercicio"));
         addSesion.setOnAction(e -> {
             try {
                 SesionTipo sesion = new SesionTipo();
@@ -101,32 +111,42 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
                 sesion.setNum_circuitos(Integer.parseInt(n_series.getText()));
                 sesion.setD_circuito(Integer.parseInt(d_series.getText()));
                 listSessionTypes.add(sesion);
-            }
-            catch(Exception err) {
+            } catch (Exception err) {
                 System.out.println(e);
             }
-           });
+        });
         btnStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                vBoxSesiones.setVisible(false);
-                vBoxChrono.setVisible(true);
+                if (tableSessionTypes.getSelectionModel().getSelectedItem() != null) {
+                    vBoxSesiones.setVisible(false);
+                    vBoxChrono.setVisible(true);
+                    //----------------------
+                    SesionTipo sesion = tableSessionTypes.getSelectionModel().getSelectedItem();
+                    Long tiempo_totalS = Long.valueOf((sesion.getT_calentamiento() + sesion.getNum_circuitos()
+                            * (sesion.getD_ejercicio()
+                            + (sesion.getNum_ejercicios()
+                            * (sesion.getD_ejercicio()
+                            + sesion.getT_ejercicio())))));
+                    System.out.println(tiempo_totalS);
+
+                    minutos = Math.toIntExact(tiempo_totalS % 60);
+                    segundos = Math.toIntExact(tiempo_totalS / 60);
+                    milesimas = 0;
+                    
+                    tiempo.setText(minutos + ":" + segundos + ":" + milesimas);
+                }
             }
-});
-    }    
+        });
+    }
 
     public void run() {
         //min es minutos, seg es segundos y mil es milesimas de segundo
         String min = "", seg = "", mil = "";
         try {
-            //Mientras cronometroActivo sea verdadero entonces seguira
-            //aumentando el tiempo
             while (cronometroActivo) {
                 Thread.sleep(100);
-                //Cuando llega a 1000 osea 1 segundo aumenta 1 segundo
-                //y las milesimas de segundo de nuevo a 0
                 if (milesimas == 0) {
-                    
                     //Si los segundos llegan a 60 entonces aumenta 1 los minutos
                     //y los segundos vuelven a 0
                     if (segundos == 0 && minutos == 0 && milesimas == 0) {
@@ -135,10 +155,9 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
                         pararCronometro();
                         minutos--;
                     }
-                    if(segundos == 0){
+                    if (segundos == 0) {
                         segundos = 59;
                         minutos -= 1;
-                        
                     }
                     milesimas = 1000;
                     segundos -= 1;
@@ -161,13 +180,12 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
                 if (milesimas < 10) {
                     mil += milesimas.toString();
                 } else if (milesimas < 100) {
-                    mil =  milesimas.toString();
+                    mil = milesimas.toString();
                 } else {
                     mil = milesimas.toString();
                 }
 
                 //Colocamos en la etiqueta la informacion
-
                 tiempo.setText(min + ":" + seg + ":" + mil);
             }
         } catch (Exception e) {
@@ -175,32 +193,28 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
         //Cuando se reincie se coloca nuevamente en 00:00:000
         tiempo.setText("00:00:00");
     }
-    
-   
+
     public void iniciarCronometro() {
         cronometroActivo = true;
         pausar = true;
-        hilo = new Thread( this );
+        hilo = new Thread(this);
         hilo.start();
     }
-    public void pararCronometro(){
+
+    public void pararCronometro() {
         cronometroActivo = false;
-        pausar = true ;
+        pausar = true;
     }
+
     public void reiniciarCronometro() {
         cronometroActivo = false;
         pausar = false;
     }
 
-    @FXML
-    private void start(ActionEvent event) {
-        iniciarCronometro();
-    }
-
 
     @FXML
     private void stop(ActionEvent event) {
-                pararCronometro();
+        pararCronometro();
     }
 
     @FXML
@@ -228,5 +242,10 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
             }
         }
     }
-    
+
+    @FXML
+    private void start(ActionEvent event) {
+        iniciarCronometro();
+    }
+
 }
