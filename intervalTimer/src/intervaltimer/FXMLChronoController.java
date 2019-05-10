@@ -5,9 +5,11 @@
  */
 package intervaltimer;
 
+import accesoBD.AccesoBD;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,9 +18,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import modelo.Gym;
 import modelo.SesionTipo;
 
 /**
@@ -64,13 +70,26 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
     private VBox vBoxChrono;
     
     private ObservableList<SesionTipo> listSessionTypes;
+    @FXML
+    private TableView<SesionTipo> tableSessionTypes;
+    @FXML
+    private TableColumn<SesionTipo, String> nameColumn;
+    @FXML
+    private TableColumn<SesionTipo, String> seriesColumn;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        
+        Gym gym = AccesoBD.getInstance().getGym();
+        listSessionTypes = FXCollections.observableList(gym.getTiposSesion());
+        System.out.println(listSessionTypes.isEmpty());
+        tableSessionTypes.setItems(listSessionTypes);
+        nameColumn.setCellValueFactory(
+              new PropertyValueFactory<>("codigo")
+        );
+        seriesColumn.setCellValueFactory(new PropertyValueFactory<>("num_circuitos"));
         addSesion.setOnAction(e -> {
             try {
                 SesionTipo sesion = new SesionTipo();
