@@ -32,16 +32,21 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
     boolean cronometroActivo;
     @FXML
     private Accordion asd;
+    Integer minutos;
+    Integer segundos;
+    Integer milesimas;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        minutos = 1;
+        segundos = 0;
+        milesimas = 0;
     }    
 
     public void run() {
-        Integer minutos = 0, segundos = 0, milesimas = 0;
         //min es minutos, seg es segundos y mil es milesimas de segundo
         String min = "", seg = "", mil = "";
         try {
@@ -49,20 +54,27 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
             //aumentando el tiempo
             while (cronometroActivo) {
                 Thread.sleep(100);
-                milesimas += 100;
-
                 //Cuando llega a 1000 osea 1 segundo aumenta 1 segundo
                 //y las milesimas de segundo de nuevo a 0
-                if (milesimas == 1000) {
-                    milesimas = 0;
-                    segundos += 1;
+                if (milesimas == 0) {
+                    
                     //Si los segundos llegan a 60 entonces aumenta 1 los minutos
                     //y los segundos vuelven a 0
-                    if (segundos == 60) {
+                    if (segundos == 0 && minutos == 0 && milesimas == 0) {
                         segundos = 0;
-                        minutos++;
+                        System.out.println("FINISH");
+                        pararCronometro();
+                        minutos--;
                     }
+                    if(segundos == 0){
+                        segundos = 59;
+                        minutos -= 1;
+                        
+                    }
+                    milesimas = 1000;
+                    segundos -= 1;
                 }
+                milesimas -= 100;
 
                 //Esto s para que siempre este en formato
                 //00:00:000
@@ -86,13 +98,15 @@ public class FXMLChronoController implements Initializable,Runnable,ActionListen
                 }
 
                 //Colocamos en la etiqueta la informacion
+
                 tiempo.setText(min + ":" + seg + ":" + mil);
             }
         } catch (Exception e) {
         }
         //Cuando se reincie se coloca nuevamente en 00:00:000
-        tiempo.setText("00:00:0");
+        tiempo.setText("00:00:00");
     }
+    
    
     public void iniciarCronometro() {
         cronometroActivo = true;
