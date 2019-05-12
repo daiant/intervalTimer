@@ -41,9 +41,17 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     boolean pausar;
     Thread hilo;
     boolean cronometroActivo;
+    Integer tiempoEj;
+    Integer dEj;
+    Integer tiempoCal;
+    Integer tiempoDescSerie;
+    Integer numSeries;
+    Integer numEjercicios;
     Integer minutos;
     Integer segundos;
     Integer milesimas;
+    Integer ejActual = 1;
+    Integer serieActual = 1;
     @FXML
     private TextField t_calentamiento;
     @FXML
@@ -82,6 +90,10 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     private TableColumn<SesionTipo, String> tiemposColumn;
     @FXML
     private TableColumn<SesionTipo, String> descansoColumn;
+    @FXML
+    private Text textEjercicio;
+    @FXML
+    private Text textSerie;
 
     /**
      * Initializes the controller class.
@@ -123,17 +135,17 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                     vBoxChrono.setVisible(true);
                     //----------------------
                     SesionTipo sesion = tableSessionTypes.getSelectionModel().getSelectedItem();
-                    Long tiempo_totalS = Long.valueOf((sesion.getT_calentamiento() + sesion.getNum_circuitos()
-                            * (sesion.getD_ejercicio()
-                            + (sesion.getNum_ejercicios()
-                            * (sesion.getD_ejercicio()
-                            + sesion.getT_ejercicio())))));
-                    System.out.println(tiempo_totalS);
-
-                    minutos = Math.toIntExact(tiempo_totalS % 60);
-                    segundos = Math.toIntExact(tiempo_totalS / 60);
+                    dEj = sesion.getD_ejercicio();
+                    tiempoEj = sesion.getT_ejercicio();
+                    tiempoCal = sesion.getT_calentamiento();
+                    tiempoDescSerie = sesion.getD_circuito();
+                    numSeries = sesion.getNum_circuitos();
+                    numEjercicios = sesion.getNum_ejercicios();
+                    minutos = Math.toIntExact(tiempoCal % 60);
+                    segundos = Math.toIntExact(tiempoCal / 60);
                     milesimas = 0;
-                    
+                    textEjercicio.setText("Ejercicio : " + ejActual + "/" + numEjercicios);
+                    textSerie.setText("Serie :" + serieActual + "/" + numSeries);
                     tiempo.setText(minutos + ":" + segundos + ":" + milesimas);
                 }
             }
@@ -149,15 +161,25 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                 if (milesimas == 0) {
                     //Si los segundos llegan a 60 entonces aumenta 1 los minutos
                     //y los segundos vuelven a 0
-                    if (segundos == 0 && minutos == 0 && milesimas == 0) {
+                    if (segundos <= 0 && minutos == 0 && milesimas == 0) {
                         segundos = 0;
                         System.out.println("FINISH");
-                        pararCronometro();
+                        ejActual += 1;
+                        if(ejActual.compareTo(numEjercicios) == 0 ){
+                            pararCronometro();
+                        }
+                        else{
+                            segundos = tiempoEj / 60;
+                            minutos = tiempoEj % 60;
+                            milesimas = 0;
+                            System.out.println(minutos + " " + segundos + " " + milesimas);
+                            this.run();
+                        }
                         minutos--;
                     }
-                    if (segundos == 0) {
+                    if (segundos <= 0) {
                         segundos = 59;
-                        minutos -= 1;
+                        minutos -=1;
                     }
                     milesimas = 1000;
                     segundos -= 1;
@@ -176,7 +198,6 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                 } else {
                     seg = segundos.toString();
                 }
-
                 if (milesimas < 10) {
                     mil += milesimas.toString();
                 } else if (milesimas < 100) {
@@ -211,7 +232,6 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         pausar = false;
     }
 
-
     @FXML
     private void stop(ActionEvent event) {
         pararCronometro();
@@ -220,6 +240,11 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     @FXML
     private void restart(ActionEvent event) {
         reiniciarCronometro();
+    }
+
+    @FXML
+    private void start(ActionEvent event) {
+        iniciarCronometro();
     }
 
     @Override
@@ -242,10 +267,4 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
             }
         }
     }
-
-    @FXML
-    private void start(ActionEvent event) {
-        iniciarCronometro();
-    }
-
 }

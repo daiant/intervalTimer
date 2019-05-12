@@ -120,15 +120,40 @@
       </VBox>
       <VBox fx:id="vBoxChrono" layoutX="165.0" layoutY="81.0" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <VBox VBox.vgrow="ALWAYS">
                <children>
-                  <Text fx:id="tiempo" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00:00">
-                     <font>
-                        <Font size="96.0" />
-                     </font>
-                  </Text>
+                  <HBox prefHeight="81.0" prefWidth="600.0">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <children>
+                        <Text fx:id="textEjercicio" strokeType="OUTSIDE" strokeWidth="0.0" text="EJERCICIO : 0/40">
+                           <HBox.margin>
+                              <Insets left="30.0" top="20.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="36.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Text fx:id="tiempo" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00:00">
+                           <font>
+                              <Font size="80.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="TOP_RIGHT" prefHeight="71.0" prefWidth="600.0">
+                     <children>
+                        <Text fx:id="textSerie" strokeType="OUTSIDE" strokeWidth="0.0" text="SERIE">
+                           <HBox.margin>
+                              <Insets right="30.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#start" text="Start" />
