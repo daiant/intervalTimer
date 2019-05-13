@@ -39,6 +39,8 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
 
     public static int onoff = 0;
     boolean pausar;
+    boolean esCal = true;
+    boolean esDesc = false;
     Thread hilo;
     boolean cronometroActivo;
     Integer tiempoEj;
@@ -141,76 +143,123 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                     tiempoDescSerie = sesion.getD_circuito();
                     numSeries = sesion.getNum_circuitos();
                     numEjercicios = sesion.getNum_ejercicios();
+
                     minutos = Math.toIntExact(tiempoCal % 60);
                     segundos = Math.toIntExact(tiempoCal / 60);
                     milesimas = 0;
                     textEjercicio.setText("Ejercicio : " + ejActual + "/" + numEjercicios);
                     textSerie.setText("Serie :" + serieActual + "/" + numSeries);
                     tiempo.setText(minutos + ":" + segundos + ":" + milesimas);
+
                 }
             }
         });
+        tiempoCal = 10;
+        dEj = 11;
+        tiempoEj = 9;
     }
 
     public void run() {
         //min es minutos, seg es segundos y mil es milesimas de segundo
+        segundos = 10;
+        minutos = 0;
+        milesimas = 0;
         String min = "", seg = "", mil = "";
-        try {
-            while (cronometroActivo) {
-                Thread.sleep(100);
-                if (milesimas == 0) {
-                    //Si los segundos llegan a 60 entonces aumenta 1 los minutos
-                    //y los segundos vuelven a 0
-                    if (segundos <= 0 && minutos == 0 && milesimas == 0) {
-                        segundos = 0;
-                        System.out.println("FINISH");
-                        ejActual += 1;
-                        if(ejActual.compareTo(numEjercicios) == 0 ){
-                            pararCronometro();
-                        }
-                        else{
-                            segundos = tiempoEj / 60;
-                            minutos = tiempoEj % 60;
-                            milesimas = 0;
-                            System.out.println(minutos + " " + segundos + " " + milesimas);
-                            this.run();
-                        }
-                        minutos--;
-                    }
-                    if (segundos <= 0) {
-                        segundos = 59;
-                        minutos -=1;
-                    }
-                    milesimas = 1000;
-                    segundos -= 1;
-                }
-                milesimas -= 100;
+        for (int j = 0; j < numSeries;) {
+            for (int i = 0; i < numEjercicios;) {
+                cronometroActivo = true;
+                if (esCal) {
+                    segundos = 10;
+                    minutos = 0;
+                    milesimas = 0;
+                    System.out.println(minutos + " " + segundos + " " + milesimas);
+                } else {
 
-                //Esto s para que siempre este en formato
-                //00:00:000
-                if (minutos < 10) {
-                    min = "0" + minutos;
-                } else {
-                    min = minutos.toString();
+                    if (esDesc) {
+                        segundos = 11;
+                        minutos = 0;
+                        milesimas = 0;
+                        System.out.println(minutos + " " + segundos + " " + milesimas);
+
+                    } else {
+                        segundos = 9;
+                        minutos = 0;
+                        milesimas = 0;
+                        ejActual++;
+                        System.out.println(minutos + " " + segundos + " " + milesimas);
+                    }
+
                 }
-                if (segundos < 10) {
-                    seg = "0" + segundos;
-                } else {
-                    seg = segundos.toString();
-                }
-                if (milesimas < 10) {
-                    mil += milesimas.toString();
-                } else if (milesimas < 100) {
-                    mil = milesimas.toString();
-                } else {
-                    mil = milesimas.toString();
+                try {
+                    while (cronometroActivo) {
+                        Thread.sleep(100);
+
+                        if (milesimas == 0) {
+                            //Si los segundos llegan a 60 entonces aumenta 1 los minutos
+                            //y los segundos vuelven a 0
+                            if (segundos <= 0 && minutos == 0 && milesimas == 0) {
+                                System.out.println("FINISH");
+                                ejActual += 1;
+                                pararCronometro();
+                                break;
+                            }
+                            if (segundos <= 0) {
+                                segundos = 59;
+                                minutos -= 1;
+                            }
+                            milesimas = 1000;
+                            segundos -= 1;
+                        }
+                        milesimas -= 100;
+
+                        //Esto s para que siempre este en formato
+                        //00:00:000
+                        if (minutos < 10) {
+                            min = "0" + minutos;
+                        } else {
+                            min = minutos.toString();
+                        }
+                        if (segundos < 10) {
+                            seg = "0" + segundos;
+                        } else {
+                            seg = segundos.toString();
+                        }
+                        if (milesimas < 10) {
+                            mil += milesimas.toString();
+                        } else if (milesimas < 100) {
+                            mil = milesimas.toString();
+                        } else {
+                            mil = milesimas.toString();
+                        }
+                        //Colocamos en la etiqueta la informacion
+                        tiempo.setText(min + ":" + seg + ":" + mil);
+                    }
+                    System.out.println("esto deberia terminar?");
+
+                    if (esCal) {
+                        esCal = !esCal;
+                        esDesc = false;
+                    } else {
+                        esDesc = !esDesc;
+                        if (!esDesc) {
+                            System.out.println("Esto ha sido un descanso");
+                        }
+                    }
+                    if (!esDesc && !esCal) {
+                        i++;
+                        textEjercicio.setText("Ejercicio : " + i + "/" + numEjercicios);
+                    }
+
+                    // this.run();
+                } catch (Exception e) {
+                    System.out.println(e);
                 }
 
-                //Colocamos en la etiqueta la informacion
-                tiempo.setText(min + ":" + seg + ":" + mil);
             }
-        } catch (Exception e) {
+            j++;
+            textSerie.setText("Serie : " + j + "/"  + numSeries);
         }
+
         //Cuando se reincie se coloca nuevamente en 00:00:000
         tiempo.setText("00:00:00");
     }
@@ -220,6 +269,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         pausar = true;
         hilo = new Thread(this);
         hilo.start();
+
     }
 
     public void pararCronometro() {
