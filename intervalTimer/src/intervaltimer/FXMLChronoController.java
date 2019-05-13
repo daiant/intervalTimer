@@ -41,6 +41,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     boolean pausar;
     boolean esCal = true;
     boolean esDesc = false;
+
     Thread hilo;
     boolean cronometroActivo;
     Integer tiempoEj;
@@ -169,21 +170,26 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
             for (int i = 0; i < numEjercicios;) {
                 cronometroActivo = true;
                 if (esCal) {
-                    segundos = 10;
-                    minutos = 0;
+                    segundos = 0;
+                    minutos = tiempoCal;
                     milesimas = 0;
                     System.out.println(minutos + " " + segundos + " " + milesimas);
                 } else {
 
                     if (esDesc) {
-                        segundos = 11;
-                        minutos = 0;
-                        milesimas = 0;
-                        System.out.println(minutos + " " + segundos + " " + milesimas);
-
+                        if (j == 0) {
+                            segundos = 0;
+                            minutos = dEj;
+                            milesimas = 0;
+                            System.out.println(minutos + " " + segundos + " " + milesimas);
+                        }else{
+                            segundos = 0;
+                            minutos = tiempoDescSerie;
+                            milesimas = 0;
+                        }
                     } else {
                         segundos = 9;
-                        minutos = 0;
+                        minutos = tiempoEj;
                         milesimas = 0;
                         ejActual++;
                         System.out.println(minutos + " " + segundos + " " + milesimas);
@@ -256,6 +262,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                 }
 
             }
+            esCal = true;
             j++;
             textSerie.setText("Serie : " + j + "/"  + numSeries);
         }
