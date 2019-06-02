@@ -38,10 +38,14 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     private Text tiempo;
 
     public static int onoff = 0;
-    boolean pausar;
+    boolean reset = false;
     boolean esCal = true;
     boolean esDesc = false;
-
+    boolean running = false;
+    boolean reiniciar = false;
+    
+    
+    boolean pausar;
     Thread hilo;
     boolean cronometroActivo;
     Integer tiempoEj;
@@ -55,6 +59,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     Integer milesimas;
     Integer ejActual = 1;
     Integer serieActual = 1;
+    
     @FXML
     private TextField t_calentamiento;
     @FXML
@@ -153,6 +158,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                     tiempo.setText(minutos + ":" + segundos + ":" + milesimas);
 
                 }
+                btnStart.setDisable(true);
             }
         });
         tiempoCal = 10;
@@ -167,7 +173,10 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         milesimas = 0;
         String min = "", seg = "", mil = "";
         for (int j = 0; j < numSeries;) {
+            reset = false;
             for (int i = 0; i < numEjercicios;) {
+                if(reset) break;
+                
                 cronometroActivo = true;
                 if (esCal) {
                     segundos = 0;
@@ -199,7 +208,11 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                 try {
                     while (cronometroActivo) {
                         Thread.sleep(100);
-
+                        if(reset){
+                            i = 0;
+                            j= 0;
+                            break;
+                        }
                         if (milesimas == 0) {
                             //Si los segundos llegan a 60 entonces aumenta 1 los minutos
                             //y los segundos vuelven a 0
@@ -233,10 +246,13 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                         if (milesimas < 10) {
                             mil += milesimas.toString();
                         } else if (milesimas < 100) {
-                            mil = milesimas.toString();
+                            mil = Integer.toString((int)(milesimas/10));
                         } else {
-                            mil = milesimas.toString();
+                            mil = Integer.toString((int)(milesimas/100));
                         }
+                        if(pausar) while(pausar){
+                        Thread.sleep(100);
+                    }
                         //Colocamos en la etiqueta la informacion
                         tiempo.setText(min + ":" + seg + ":" + mil);
                     }
@@ -255,7 +271,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                         i++;
                         textEjercicio.setText("Ejercicio : " + i + "/" + numEjercicios);
                     }
-
+                    
                     // this.run();
                 } catch (Exception e) {
                     System.out.println(e);
@@ -273,35 +289,41 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
 
     public void iniciarCronometro() {
         cronometroActivo = true;
-        pausar = true;
-        hilo = new Thread(this);
-        hilo.start();
-
+        pausar = false;
+        if(!running){
+            hilo = new Thread(this);
+            hilo.start();
+        }   
+        running = true;
     }
 
     public void pararCronometro() {
-        cronometroActivo = false;
-        pausar = true;
+        cronometroActivo = true;
+        pausar = !pausar;
     }
 
     public void reiniciarCronometro() {
-        cronometroActivo = false;
+        reset =true;
         pausar = false;
+        
     }
 
     @FXML
     private void stop(ActionEvent event) {
         pararCronometro();
+        btnStart.setDisable(true);
     }
 
     @FXML
     private void restart(ActionEvent event) {
         reiniciarCronometro();
+        btnStart.setDisable(false);
     }
 
     @FXML
     private void start(ActionEvent event) {
         iniciarCronometro();
+        btnStart.setDisable(true);
     }
 
     @Override
@@ -324,4 +346,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
             }
         }
     }
+
+
+   
 }

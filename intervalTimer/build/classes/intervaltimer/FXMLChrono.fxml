@@ -157,7 +157,6 @@
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#start" text="Start" />
-                  <Button mnemonicParsing="false" text="Pause" />
                   <Button mnemonicParsing="false" onAction="#stop" text="Stop" />
                   <Button mnemonicParsing="false" onAction="#restart" text="Reset" />
                </children>
