@@ -298,6 +298,10 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                 }
 
             }
+            if(siguienteSer){
+                    siguienteSer = false;
+                   // break;
+            }
             esCal = true;
             j++;
             textSerie.setText("Serie : " + j + "/"  + numSeries);
