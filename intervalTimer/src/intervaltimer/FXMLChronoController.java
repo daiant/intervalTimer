@@ -193,7 +193,8 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         minutos = 0;
         milesimas = 0;
         String min = "", seg = "", mil = "";
-        for (int j = 0; j < numSeries;) {
+        for (int j = 1; j <= numSeries;) {
+            textSerie.setText("Serie : " + j + "/"  + numSeries);
             reset = false;
             for (int i = 0; i < numEjercicios;) {
                 if(siguienteSer){
@@ -304,13 +305,14 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
             }
             esCal = true;
             j++;
-            textSerie.setText("Serie : " + j + "/"  + numSeries);
+           
+            
         }
         
         //TODO
 
         //Cuando se reincie se coloca nuevamente en 00:00:000
-        tiempo.setText("00:00:00");
+        tiempo.setText("00:00:000");
     }
 
     public void iniciarCronometro() {
@@ -331,6 +333,10 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     public void reiniciarCronometro() {
         reset =true;
         pausar = false;
+         ejActual = 1; 
+        serieActual = 1; 
+        setIniText();
+        pausar = true;
     }
     public void siguiente(int i){
         i++;
@@ -390,8 +396,19 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     @FXML
     private void siguienteSer(ActionEvent event) {
         siguienteSer = true;
-    }
+        }
+    private void setIniText() {
+            minutos = Math.toIntExact(tiempoCal % 60);
+            segundos = Math.toIntExact(tiempoCal / 60);
+            milesimas = 0;
+            String m = String.format("%02d", minutos);
+            String s = String.format("%02d", segundos);
+            String mil = String.format("%03d", milesimas);
 
+            textEjercicio.setText("Ejercicio : " + ejActual + "/" + numEjercicios);
+            textSerie.setText("Serie :" + serieActual + "/" + numSeries);
+            tiempo.setText(m + ":" + s + ":" + mil);
+        }
 
    
 }
