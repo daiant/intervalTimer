@@ -6,8 +6,10 @@
 package intervaltimer;
 
 import accesoBD.AccesoBD;
+import javafx.scene.paint.Color;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
@@ -53,7 +55,8 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     boolean running = false;
     boolean reiniciar = false;
     
-    
+    Long iniTime;
+    Long finTime;
     boolean pausar;
     Thread hilo;
     boolean cronometroActivo;
@@ -127,7 +130,6 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         // TODO
         Gym gym = AccesoBD.getInstance().getGym();
         listSessionTypes = FXCollections.observableList(gym.getTiposSesion());
-        System.out.println(listSessionTypes.isEmpty());
         tableSessionTypes.setItems(listSessionTypes);
         nameColumn.setCellValueFactory(
                 new PropertyValueFactory<>("codigo")
@@ -248,6 +250,11 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                             j = 0;
                             break;
                         }
+                        if (minutos == 0 && segundos <= 10) {
+                            System.out.println("HOla!!!!!!!!!!!!");
+                            tiempo.setFill(Color.RED);
+                        }
+                        else tiempo.setFill(Color.BLACK);
                         if (milesimas == 0) {
                             //Si los segundos llegan a 60 entonces aumenta 1 los minutos
                             //y los segundos vuelven a 0
@@ -271,9 +278,10 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                         String m = String.format("%02d", minutos);
                         String s = String.format("%02d", segundos);
                         String mi = String.format("%03d", milesimas);
-                        if(pausar) while(pausar){
-                        Thread.sleep(100);
-                    }
+                        if(pausar) 
+                            while(pausar){
+                                Thread.sleep(100);
+                            }
                         //Colocamos en la etiqueta la informacion
                         tiempo.setText(m + ":" + s + ":" + mi);
                     }
@@ -308,14 +316,19 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
            
             
         }
+//-+----------------------------------------------------------------//
+        // Aquí acaba el cronometro
+        finTime = System.currentTimeMillis();
+        Duration duration = Duration.ofMillis(finTime - iniTime); // A segundos.
+        System.out.println(finTime -iniTime);
+        System.out.println(duration.toMinutes());
         
-        //TODO
-
-        //Cuando se reincie se coloca nuevamente en 00:00:000
         tiempo.setText("00:00:000");
     }
 
     public void iniciarCronometro() {
+        if(!cronometroActivo)
+            iniTime = System.currentTimeMillis();
         cronometroActivo = true;
         pausar = false;
         if(!running){

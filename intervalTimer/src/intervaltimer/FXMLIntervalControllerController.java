@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -153,24 +154,32 @@ public class FXMLIntervalControllerController implements Initializable {
         dlg.getDialogPane().getButtonTypes().addAll(ButtonType.CLOSE);
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Sesiones");
+        xAxis.setLabel("Día");
        
         LineChart<String,Number> lineChart = new LineChart<>(xAxis,yAxis);
         XYChart.Series series1 = new XYChart.Series();
-        series1.setName("test");
+        
         XYChart.Series series2 = new XYChart.Series();
-        series2.setName("otrotest");
+        series1.setName("Duración Teórica");
+        series2.setName("Duración Real");
+        XYChart.Series series3 = new XYChart.Series();
+        series3.setName("Descansos");
         Grupo grupo = listGroups.get(0);
         for(Sesion sesion : grupo.getSesiones()) {
-             Number aux = (Number) sesion.getDuracion().toMinutes();
-             Integer hola = sesion.getFecha().getMinute();
-             Number teoric_duration = (Number) sesion.getTipo().getT_ejercicio();
-             series1.getData().add(new XYChart.Data(hola.toString(), aux));
-             series2.getData().add(new XYChart.Data(hola.toString(),teoric_duration));
-             System.out.println(sesion.getTipo().getCodigo()); // Funciona!!!!
+             SesionTipo tipo = sesion.getTipo();
+             Number realDuration = (Number) sesion.getDuracion().toMinutes();
+             DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+             String hola = sesion.getFecha().format(customFormatter);
+             Number teoric_duration = tipo.getT_ejercicio() * tipo.getNum_ejercicios() * tipo.getNum_circuitos() + tipo.getT_calentamiento();
+             series2.getData().add(new XYChart.Data(hola.toString(), realDuration));
+             series1.getData().add(new XYChart.Data(hola.toString(),teoric_duration));
+             Number descanso = tipo.getD_circuito() * tipo.getNum_circuitos() + tipo.getD_ejercicio() * tipo.getNum_ejercicios();
+             series3.getData().add(new XYChart.Data(hola.toString(), descanso));
+             System.out.println("Real: " + sesion.getDuracion().toMillis() + " Teórica"+ teoric_duration);
         }
         lineChart.getData().add(series1);
         lineChart.getData().add(series2);
+        lineChart.getData().add(series3);
         dlg.getDialogPane().setContent(lineChart);
         Optional<ButtonType> res = dlg.showAndWait();
         if(res.get() == ButtonType.CLOSE) {
