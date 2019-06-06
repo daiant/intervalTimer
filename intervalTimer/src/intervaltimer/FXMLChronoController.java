@@ -68,6 +68,8 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     Integer milesimas;
     Integer ejActual = 1;
     Integer serieActual = 1;
+    boolean siguienteEj = false;
+    boolean siguienteSer = false;
     
     @FXML
     private TextField t_calentamiento;
@@ -111,6 +113,10 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     private Text textEjercicio;
     @FXML
     private Text textSerie;
+    @FXML
+    private Button btnNextEj;
+    @FXML
+    private Button btnNextSerie;
 
     /**
      * Initializes the controller class.
@@ -187,9 +193,14 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         minutos = 0;
         milesimas = 0;
         String min = "", seg = "", mil = "";
-        for (int j = 0; j < numSeries;) {
+        for (int j = 0; j <= numSeries;) {
             reset = false;
             for (int i = 0; i < numEjercicios;) {
+                if(siguienteSer){
+                    j++;
+                    siguienteSer = false;
+                    break;
+                }
                 if (reset) {
                     break;
                 }
@@ -224,6 +235,14 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                 }
                 try {
                     while (cronometroActivo) {
+                        if(siguienteEj){
+                            siguienteEj = false;
+                            i++;
+                            break;
+                        }
+                        if(siguienteSer){
+                            break;
+                        }
                         Thread.sleep(100);
                         if (reset) {
                             i = 0;
@@ -310,8 +329,11 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     public void reiniciarCronometro() {
         reset =true;
         pausar = false;
-        
     }
+    public void siguiente(int i){
+        i++;
+    }
+    
 
     @FXML
     private void stop(ActionEvent event) {
@@ -356,6 +378,16 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     private void closeWindow(ActionEvent event) {
         Stage stage = (Stage) btnCancelTabla.getScene().getWindow();
         stage.close();
+    }
+
+    @FXML
+    private void siguienteEj(ActionEvent event) {
+        siguienteEj = true;
+    }
+
+    @FXML
+    private void siguienteSer(ActionEvent event) {
+        siguienteSer = true;
     }
 
 
