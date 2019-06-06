@@ -319,6 +319,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         cronometroActivo = true;
         pausar = false;
         if(!running){
+            if(hilo != null) hilo.stop();
             hilo = new Thread(this);
             hilo.start();
         }   
@@ -337,6 +338,9 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         serieActual = 1; 
         setIniText();
         pausar = true;
+        running = false;
+        ejActual = 0;
+        serieActual = 0;
     }
     public void siguiente(int i){
         i++;
