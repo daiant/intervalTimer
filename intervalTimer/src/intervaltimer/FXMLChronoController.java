@@ -155,6 +155,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                 System.out.println(e);
             }
         });
+        
         btnStart.disableProperty().bind(Bindings.isEmpty(tableSessionTypes.getSelectionModel().getSelectedItems()));
         btnStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -179,6 +180,8 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         tiempoCal = 10;
         dEj = 11;
         tiempoEj = 9;
+        type.setText("");
+        
     }
 
     public void run() {
@@ -206,9 +209,11 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                     minutos = tiempoCal;
                     milesimas = 0;
                     System.out.println(minutos + " " + segundos + " " + milesimas);
+                    type.setText("Calentamiento");
                 } else {
 
                     if (esDesc) {
+                        type.setText("Descanso");
                         if (j == 0) {
                             segundos = 0;
                             minutos = dEj;
@@ -277,6 +282,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                             }
                         //Colocamos en la etiqueta la informacion
                         tiempo.setText(m + ":" + s + ":" + mi);
+                        type.setText("Ejercicio");
                     }
                     System.out.println("esto deberia terminar?");
 
