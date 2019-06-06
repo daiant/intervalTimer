@@ -193,11 +193,10 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         minutos = 0;
         milesimas = 0;
         String min = "", seg = "", mil = "";
-        for (int j = 0; j <= numSeries;) {
+        for (int j = 0; j < numSeries;) {
             reset = false;
             for (int i = 0; i < numEjercicios;) {
                 if(siguienteSer){
-                    j++;
                     siguienteSer = false;
                     break;
                 }
@@ -237,7 +236,6 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                     while (cronometroActivo) {
                         if(siguienteEj){
                             siguienteEj = false;
-                            i++;
                             break;
                         }
                         if(siguienteSer){
