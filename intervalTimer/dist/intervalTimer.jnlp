@@ -8,12 +8,9 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="intervalTimer.jar" size="18298" download="eager" />
-    <jar href="lib\AccesoBD.jar" size="12323" download="eager" />
+    <jar href="intervalTimer.jar" size="18329" download="eager" />
+    <jar href="lib/AccesoBD.jar" size="12323" download="eager" />
   </resources>
-  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="intervalTimer" >
-    <param name="requiredFXVersion" value="8.0+"/>
-  </applet-desc>
   <jfx:javafx-desc  width="800" height="600" main-class="intervaltimer.IntervalTimer"  name="intervalTimer" />
   <update check="always"/>
 </jnlp>
