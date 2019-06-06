@@ -167,7 +167,7 @@ public class FXMLIntervalControllerController implements Initializable {
              Number teoric_duration = (Number) sesion.getTipo().getT_ejercicio();
              series1.getData().add(new XYChart.Data(hola.toString(), aux));
              series2.getData().add(new XYChart.Data(hola.toString(),teoric_duration));
-             System.out.println(sesion.toString()); // Funciona!!!!
+             System.out.println(sesion.getTipo().getCodigo()); // Funciona!!!!
         }
         lineChart.getData().add(series1);
         lineChart.getData().add(series2);
