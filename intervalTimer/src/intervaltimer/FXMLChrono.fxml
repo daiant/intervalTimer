@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
@@ -14,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="intervaltimer.FXMLChronoController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="intervaltimer.FXMLChronoController">
    <children>
       <VBox fx:id="vBoxSesiones" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -122,15 +127,15 @@
          <children>
             <VBox VBox.vgrow="ALWAYS">
                <children>
-                  <HBox prefHeight="81.0" prefWidth="600.0">
+                  <HBox alignment="CENTER" prefHeight="102.0" prefWidth="600.0">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                      <children>
-                        <Text fx:id="textEjercicio" strokeType="OUTSIDE" strokeWidth="0.0" text="EJERCICIO : 0/40">
-                           <HBox.margin>
-                              <Insets left="30.0" top="20.0" />
-                           </HBox.margin>
+                        <Text fx:id="type" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                           <font>
+                              <Font size="46.0" />
+                           </font>
                         </Text>
                      </children>
                   </HBox>
@@ -143,17 +148,22 @@
                         </Text>
                      </children>
                   </HBox>
-                  <HBox alignment="TOP_RIGHT" prefHeight="71.0" prefWidth="600.0">
-                     <children>
-                        <Text fx:id="textSerie" strokeType="OUTSIDE" strokeWidth="0.0" text="SERIE">
-                           <HBox.margin>
-                              <Insets right="30.0" />
-                           </HBox.margin>
-                        </Text>
-                     </children>
-                  </HBox>
                </children>
             </VBox>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Text fx:id="textEjercicio" strokeType="OUTSIDE" strokeWidth="0.0" text="EJERCICIO : 0/40" GridPane.halignment="CENTER" />
+                  <Text fx:id="textSerie" strokeType="OUTSIDE" strokeWidth="0.0" text="SERIE" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+               </children>
+            </GridPane>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#start" text="Start" />

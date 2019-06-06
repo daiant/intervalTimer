@@ -120,6 +120,8 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     private Button btnNextEj;
     @FXML
     private Button btnNextSerie;
+    @FXML
+    private Text type;
 
     /**
      * Initializes the controller class.
@@ -168,17 +170,8 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                     tiempoDescSerie = sesion.getD_circuito();
                     numSeries = sesion.getNum_circuitos();
                     numEjercicios = sesion.getNum_ejercicios();
-
-                    minutos = Math.toIntExact(tiempoCal % 60);
-                    segundos = Math.toIntExact(tiempoCal / 60);
-                    milesimas = 0;
-                    String m = String.format("%02d", minutos);
-                    String s = String.format("%02d", segundos);
-                    String mil = String.format("%03d", milesimas);
-                    
-                    textEjercicio.setText("Ejercicio : " + ejActual + "/" + numEjercicios);
-                    textSerie.setText("Serie :" + serieActual + "/" + numSeries);
-                    tiempo.setText(m + ":" + s + ":" + mil);
+                    System.out.println("hola");
+                    setIniText();
                 }
                 //btnStart.setDisable(true);
             }
@@ -251,7 +244,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
                             break;
                         }
                         if (minutos == 0 && segundos <= 10) {
-                            System.out.println("HOla!!!!!!!!!!!!");
+                            //System.out.println("HOla!!!!!!!!!!!!");
                             tiempo.setFill(Color.RED);
                         }
                         else tiempo.setFill(Color.BLACK);
@@ -320,7 +313,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         // Aquí acaba el cronometro
         finTime = System.currentTimeMillis();
         Duration duration = Duration.ofMillis(finTime - iniTime); // A segundos.
-        System.out.println(finTime -iniTime);
+        System.out.println(finTime - iniTime);
         System.out.println(duration.toMinutes());
         
         tiempo.setText("00:00:000");
@@ -415,6 +408,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         siguienteSer = true;
         }
     private void setIniText() {
+        System.out.println("aldñfdkj");
             minutos = Math.toIntExact(tiempoCal % 60);
             segundos = Math.toIntExact(tiempoCal / 60);
             milesimas = 0;
