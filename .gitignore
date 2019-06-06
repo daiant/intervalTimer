@@ -1,1 +1,7 @@
 /intervalTimer/nbproject/private/
+/intervalTimer/dist/
+*.jar
+*.class
+*.properties
+*.html
+*.jnlp
