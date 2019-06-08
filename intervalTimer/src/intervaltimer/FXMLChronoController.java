@@ -331,8 +331,8 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         aux.setFecha(LocalDateTime.now());
         aux.setTipo(tableSessionTypes.getSelectionModel().getSelectedItem());
         grupo.getSesiones().add(aux);
+        type.setText("Finalizado!");
         tiempo.setText("00:00:000");
-        System.out.println("Hola");
     }
 
     public void iniciarCronometro() {

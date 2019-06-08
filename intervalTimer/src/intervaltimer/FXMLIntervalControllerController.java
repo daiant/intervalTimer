@@ -237,7 +237,9 @@ public class FXMLIntervalControllerController implements Initializable {
         controller.setGrupo(ListViewGroups.getSelectionModel().getSelectedItem());
         
         Stage stage = new Stage();
-        stage.setScene(new Scene(root));  
+        Scene scene = new Scene(root);
+        stage.setScene(scene);  
+        scene.getStylesheets().add(IntervalTimer.class.getResource("bootstrap3.css").toExternalForm());
         stage.showAndWait();
         Grupo aux = controller.getGrupo();
         updateGrupo(aux);
