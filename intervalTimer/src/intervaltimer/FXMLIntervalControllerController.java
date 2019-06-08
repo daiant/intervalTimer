@@ -230,12 +230,17 @@ public class FXMLIntervalControllerController implements Initializable {
     }
      @FXML
     private void beginWorkout(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("FXMLChrono.fxml"));
-        Parent root = (Parent) fxmlLoader.load();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("FXMLChrono.fxml"));
+        Parent root = (Parent) loader.load();
+        FXMLChronoController controller = loader.getController();
+        controller.setGrupo(ListViewGroups.getSelectionModel().getSelectedItem());
+        
         Stage stage = new Stage();
         stage.setScene(new Scene(root));  
-        stage.show();
-            
+        stage.showAndWait();
+        Grupo aux = controller.getGrupo();
+        updateGrupo(aux);
     }
     
     
@@ -250,4 +255,13 @@ public class FXMLIntervalControllerController implements Initializable {
         }
     }
 
+    private void updateGrupo(Grupo g) {
+        for(int i = 0; i < listGroups.size(); i ++) {
+            Grupo aux = listGroups.get(i);
+            if(aux.getCodigo() == g.getCodigo()) {
+                listGroups.remove(aux);
+                listGroups.add(g);
+            }
+        }
+    }
 }

@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
@@ -34,7 +35,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.converter.LocalTimeStringConverter;
+import modelo.Grupo;
 import modelo.Gym;
+import modelo.Sesion;
 import modelo.SesionTipo;
 import org.omg.CORBA.portable.ValueFactory;
 
@@ -122,6 +125,7 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
     private Button btnNextSerie;
     @FXML
     private Text type;
+    private Grupo grupo;
 
     /**
      * Initializes the controller class.
@@ -322,10 +326,13 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         // Aquí acaba el cronometro
         finTime = System.currentTimeMillis();
         Duration duration = Duration.ofMillis(finTime - iniTime); // A segundos.
-        System.out.println(finTime - iniTime);
-        System.out.println(duration.toMinutes());
-
+        Sesion aux = new Sesion();
+        aux.setDuracion(duration);
+        aux.setFecha(LocalDateTime.now());
+        aux.setTipo(tableSessionTypes.getSelectionModel().getSelectedItem());
+        grupo.getSesiones().add(aux);
         tiempo.setText("00:00:000");
+        System.out.println("Hola");
     }
 
     public void iniciarCronometro() {
@@ -432,6 +439,14 @@ public class FXMLChronoController implements Initializable, Runnable, ActionList
         textEjercicio.setText("Ejercicio : " + ejActual + "/" + numEjercicios);
         textSerie.setText("Serie :" + serieActual + "/" + numSeries);
         tiempo.setText(m + ":" + s + ":" + mil);
+    }
+
+    void setGrupo(Grupo g) {
+        this.grupo = g;
+    }
+
+    Grupo getGrupo() {
+       return grupo;
     }
 
 }
