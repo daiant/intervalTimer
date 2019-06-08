@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package intervaltimer;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,6 +23,7 @@ public class IntervalTimer extends Application {
         Scene scene = new Scene(root);
         FXMLIntervalControllerController controller = loader.getController();
         stage.setOnHidden(event -> controller.exitApplication());
+        scene.getStylesheets().add(IntervalTimer.class.getResource("bootstrap3.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
